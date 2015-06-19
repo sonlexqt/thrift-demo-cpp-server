@@ -48,6 +48,7 @@ using boost::shared_ptr;
 /*
  * GLOBAL VARS
  */
+int port = 0;
 
 class APIsHandler : virtual public APIsIf {
 public:
@@ -79,10 +80,14 @@ void printPropertyFileInfo() {
     AutoPtr<PropertyFileConfiguration> pConf;
     pConf = new PropertyFileConfiguration("viewcount.properties");
     cout << "=== The following are information get from the viewcount.properties file: ===" << endl;
+    
     int serverPort = pConf->getInt("SERVER_PORT");
     cout << "serverPort: " << serverPort << endl;
-    string serverIpAddress = pConf->getString("SERVER_IP_ADDRESS");
-    cout << "serverIpAddress: " << serverIpAddress << endl;
+    port = serverPort;
+            
+    int applyCache = pConf->getInt("applyCache");
+    cout << "applyCache: " << applyCache << endl;
+    
     string authorName = pConf->getString("AUTHOR_NAME");
     cout << "authorName: " << authorName << endl;
 }
@@ -100,21 +105,20 @@ void initLogger() {
 }
 
 int main(int argc, char **argv) {
-    int port = 9090;
+    // print out viewcount.properties file information
+    printPropertyFileInfo();
+    // init POCO's logger settings
+    initLogger();
+    
+    // start the server
     shared_ptr<APIsHandler> handler(new APIsHandler());
     shared_ptr<TProcessor> processor(new APIsProcessor(handler));
     shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
     shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
     shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
-
     TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
 
     cout << "> Server is running" << endl;
-
-    // print out viewcount.properties file information
-    printPropertyFileInfo();
-    // init POCO's logger settings
-    initLogger();
 
     server.serve();
 
