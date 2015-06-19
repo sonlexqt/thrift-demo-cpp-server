@@ -16,6 +16,8 @@
 #include "Poco/ConsoleChannel.h"
 #include "Poco/AutoPtr.h"
 #include "Poco/SplitterChannel.h"
+#include "Poco/PatternFormatter.h"
+#include "Poco/FormattingChannel.h"
 // include other libraries
 #include <iostream>
 #include <stdexcept>
@@ -41,6 +43,8 @@ using Poco::Logger;
 using Poco::FileChannel;
 using Poco::ConsoleChannel;
 using Poco::SplitterChannel;
+using Poco::PatternFormatter;
+using Poco::FormattingChannel;
 // using other namespaces
 using namespace std;
 using boost::shared_ptr;
@@ -85,7 +89,7 @@ void printPropertyFileInfo() {
     cout << "serverPort: " << serverPort << endl;
     port = serverPort;
             
-    int applyCache = pConf->getInt("applyCache");
+    int applyCache = pConf->getInt("APPLY_CACHE");
     cout << "applyCache: " << applyCache << endl;
     
     string authorName = pConf->getString("AUTHOR_NAME");
@@ -96,11 +100,18 @@ void initLogger() {
     AutoPtr<FileChannel> pFileChannel(new FileChannel);
     pFileChannel->setProperty("path", "viewCount.log");
     AutoPtr<ConsoleChannel> pConsoleChannel(new ConsoleChannel);
-    Logger::root().setChannel(pFileChannel);
-    Logger::root().setChannel(pConsoleChannel);
+    
     AutoPtr<SplitterChannel> pSplitter(new SplitterChannel);
-    pSplitter->addChannel(pConsoleChannel);
-    pSplitter->addChannel(pFileChannel);
+    
+    // add pattern formatter, more details go in to the messages
+    AutoPtr<PatternFormatter> pPatternFormatter(new PatternFormatter);
+    pPatternFormatter->setProperty("pattern", "%Y-%m-%d %H:%M:%S %s: %t");
+    AutoPtr<FormattingChannel> pFCFileChannel(new FormattingChannel(pPatternFormatter, pFileChannel));
+    AutoPtr<FormattingChannel> pFCConsoleChannel(new FormattingChannel(pPatternFormatter, pConsoleChannel));
+    
+    pSplitter->addChannel(pFCConsoleChannel);
+    pSplitter->addChannel(pFCFileChannel);
+    
     Logger::root().setChannel(pSplitter);
 }
 
@@ -118,7 +129,7 @@ int main(int argc, char **argv) {
     shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
     TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
 
-    cout << "> Server is running" << endl;
+    Logger::root().information("> Server is running");
 
     server.serve();
 
