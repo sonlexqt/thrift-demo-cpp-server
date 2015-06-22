@@ -70,8 +70,7 @@ int mySQLPort = 0;
 std::string mySQLDb = "";
 std::string mySQLUsername = "";
 std::string mySQLPassword = "";
-
-
+Session* mySQLsession;
 
 struct ViewCountInfo
 {
@@ -88,15 +87,26 @@ public:
 
     void put(const std::string& _username, const int32_t _newValue) {
         Logger::root().information("handle PUT request");
-        
+        // check if existed or not ?
+        //TODO
     }
 
     void increase(const std::string& _username) {
         Logger::root().information("handle INCREASE request");
+        //TODO
     }
 
     int32_t get(const std::string& _username) {
         Logger::root().information("handle GET request");
+        cout << _username << endl;
+        int result = 0;
+        Statement select(*mySQLsession);
+        std::string match("'" + _username + "'");
+        select << "SELECT counter FROM view_count_info WHERE username = " + match + " LIMIT 1;", into(result);
+        select.execute();
+        //Logger::root().information("GET: username = " + _username + " ,counter = " + result);
+        cout << result << endl;
+        return result;
     }
 
     bool ping() {
@@ -136,6 +146,7 @@ void getPropertiesInfo() {
     mySQLPassword = pConf->getString("MYSQL_PASSWORD");
     cout << "mySQLPassword: " << mySQLPassword << endl;
     
+    cout << "==========" << endl;
     
 }
 
@@ -165,6 +176,33 @@ std::string convertToString(int number){
     return res;
 }
 
+void insertTestData(Session* session){
+    // insert some rows
+    ViewCountInfo vcInfo = 
+    {
+        "A",
+        1
+    };
+    
+    Statement insert(*session);
+    insert << "INSERT INTO view_count_info VALUES(?, ?)",
+        use(vcInfo.username),
+        use(vcInfo.counter);
+    insert.execute();
+
+    vcInfo.username = "B";
+    vcInfo.counter  = 5;
+    insert.execute();
+    
+    vcInfo.username = "C";
+    vcInfo.counter  = 20;
+    insert.execute();
+    
+    vcInfo.username = "D";
+    vcInfo.counter  = 50;
+    insert.execute();
+}
+
 void initDb(){
     // register MySQL connector
     Poco::Data::MySQL::Connector::registerConnector();
@@ -180,11 +218,13 @@ void initDb(){
     sessionStr += ";password=";
     sessionStr += mySQLPassword;
     sessionStr += ";compress=true;auto-reconnect=true";
-    Session session("MySQL", sessionStr);
+    mySQLsession = new Session("MySQL", sessionStr);
     // drop sample table, if it exists
-    session << "DROP TABLE IF EXISTS view_count_info", now;
+    *mySQLsession << "DROP TABLE IF EXISTS view_count_info", now;
     // (re)create table
-    session << "CREATE TABLE view_count_info (username VARCHAR(30), counter INTEGER(5))", now;
+    *mySQLsession << "CREATE TABLE view_count_info (username VARCHAR(30), counter INTEGER(5))", now;
+    
+    insertTestData(mySQLsession);
 }
 int main(int argc, char **argv) {
     // print out viewcount.properties file information
