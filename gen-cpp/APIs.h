@@ -15,8 +15,8 @@ namespace thriftDemo {
 class APIsIf {
  public:
   virtual ~APIsIf() {}
-  virtual void put(const std::string& _username, const int32_t _newValue) = 0;
-  virtual void increase(const std::string& _username) = 0;
+  virtual bool put(const std::string& _username, const int32_t _newValue) = 0;
+  virtual bool increase(const std::string& _username) = 0;
   virtual int32_t get(const std::string& _username) = 0;
   virtual bool ping() = 0;
 };
@@ -48,11 +48,13 @@ class APIsIfSingletonFactory : virtual public APIsIfFactory {
 class APIsNull : virtual public APIsIf {
  public:
   virtual ~APIsNull() {}
-  void put(const std::string& /* _username */, const int32_t /* _newValue */) {
-    return;
+  bool put(const std::string& /* _username */, const int32_t /* _newValue */) {
+    bool _return = false;
+    return _return;
   }
-  void increase(const std::string& /* _username */) {
-    return;
+  bool increase(const std::string& /* _username */) {
+    bool _return = false;
+    return _return;
   }
   int32_t get(const std::string& /* _username */) {
     int32_t _return = 0;
@@ -128,22 +130,33 @@ class APIs_put_pargs {
   friend std::ostream& operator<<(std::ostream& out, const APIs_put_pargs& obj);
 };
 
+typedef struct _APIs_put_result__isset {
+  _APIs_put_result__isset() : success(false) {}
+  bool success :1;
+} _APIs_put_result__isset;
 
 class APIs_put_result {
  public:
 
-  static const char* ascii_fingerprint; // = "99914B932BD37A50B983C5E7C90AE93B";
-  static const uint8_t binary_fingerprint[16]; // = {0x99,0x91,0x4B,0x93,0x2B,0xD3,0x7A,0x50,0xB9,0x83,0xC5,0xE7,0xC9,0x0A,0xE9,0x3B};
+  static const char* ascii_fingerprint; // = "D9D3B4421B1F23CB4063C80B484E7909";
+  static const uint8_t binary_fingerprint[16]; // = {0xD9,0xD3,0xB4,0x42,0x1B,0x1F,0x23,0xCB,0x40,0x63,0xC8,0x0B,0x48,0x4E,0x79,0x09};
 
   APIs_put_result(const APIs_put_result&);
   APIs_put_result& operator=(const APIs_put_result&);
-  APIs_put_result() {
+  APIs_put_result() : success(0) {
   }
 
   virtual ~APIs_put_result() throw();
+  bool success;
 
-  bool operator == (const APIs_put_result & /* rhs */) const
+  _APIs_put_result__isset __isset;
+
+  void __set_success(const bool val);
+
+  bool operator == (const APIs_put_result & rhs) const
   {
+    if (!(success == rhs.success))
+      return false;
     return true;
   }
   bool operator != (const APIs_put_result &rhs) const {
@@ -158,15 +171,22 @@ class APIs_put_result {
   friend std::ostream& operator<<(std::ostream& out, const APIs_put_result& obj);
 };
 
+typedef struct _APIs_put_presult__isset {
+  _APIs_put_presult__isset() : success(false) {}
+  bool success :1;
+} _APIs_put_presult__isset;
 
 class APIs_put_presult {
  public:
 
-  static const char* ascii_fingerprint; // = "99914B932BD37A50B983C5E7C90AE93B";
-  static const uint8_t binary_fingerprint[16]; // = {0x99,0x91,0x4B,0x93,0x2B,0xD3,0x7A,0x50,0xB9,0x83,0xC5,0xE7,0xC9,0x0A,0xE9,0x3B};
+  static const char* ascii_fingerprint; // = "D9D3B4421B1F23CB4063C80B484E7909";
+  static const uint8_t binary_fingerprint[16]; // = {0xD9,0xD3,0xB4,0x42,0x1B,0x1F,0x23,0xCB,0x40,0x63,0xC8,0x0B,0x48,0x4E,0x79,0x09};
 
 
   virtual ~APIs_put_presult() throw();
+  bool* success;
+
+  _APIs_put_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
 
@@ -230,22 +250,33 @@ class APIs_increase_pargs {
   friend std::ostream& operator<<(std::ostream& out, const APIs_increase_pargs& obj);
 };
 
+typedef struct _APIs_increase_result__isset {
+  _APIs_increase_result__isset() : success(false) {}
+  bool success :1;
+} _APIs_increase_result__isset;
 
 class APIs_increase_result {
  public:
 
-  static const char* ascii_fingerprint; // = "99914B932BD37A50B983C5E7C90AE93B";
-  static const uint8_t binary_fingerprint[16]; // = {0x99,0x91,0x4B,0x93,0x2B,0xD3,0x7A,0x50,0xB9,0x83,0xC5,0xE7,0xC9,0x0A,0xE9,0x3B};
+  static const char* ascii_fingerprint; // = "D9D3B4421B1F23CB4063C80B484E7909";
+  static const uint8_t binary_fingerprint[16]; // = {0xD9,0xD3,0xB4,0x42,0x1B,0x1F,0x23,0xCB,0x40,0x63,0xC8,0x0B,0x48,0x4E,0x79,0x09};
 
   APIs_increase_result(const APIs_increase_result&);
   APIs_increase_result& operator=(const APIs_increase_result&);
-  APIs_increase_result() {
+  APIs_increase_result() : success(0) {
   }
 
   virtual ~APIs_increase_result() throw();
+  bool success;
 
-  bool operator == (const APIs_increase_result & /* rhs */) const
+  _APIs_increase_result__isset __isset;
+
+  void __set_success(const bool val);
+
+  bool operator == (const APIs_increase_result & rhs) const
   {
+    if (!(success == rhs.success))
+      return false;
     return true;
   }
   bool operator != (const APIs_increase_result &rhs) const {
@@ -260,15 +291,22 @@ class APIs_increase_result {
   friend std::ostream& operator<<(std::ostream& out, const APIs_increase_result& obj);
 };
 
+typedef struct _APIs_increase_presult__isset {
+  _APIs_increase_presult__isset() : success(false) {}
+  bool success :1;
+} _APIs_increase_presult__isset;
 
 class APIs_increase_presult {
  public:
 
-  static const char* ascii_fingerprint; // = "99914B932BD37A50B983C5E7C90AE93B";
-  static const uint8_t binary_fingerprint[16]; // = {0x99,0x91,0x4B,0x93,0x2B,0xD3,0x7A,0x50,0xB9,0x83,0xC5,0xE7,0xC9,0x0A,0xE9,0x3B};
+  static const char* ascii_fingerprint; // = "D9D3B4421B1F23CB4063C80B484E7909";
+  static const uint8_t binary_fingerprint[16]; // = {0xD9,0xD3,0xB4,0x42,0x1B,0x1F,0x23,0xCB,0x40,0x63,0xC8,0x0B,0x48,0x4E,0x79,0x09};
 
 
   virtual ~APIs_increase_presult() throw();
+  bool* success;
+
+  _APIs_increase_presult__isset __isset;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
 
@@ -528,12 +566,12 @@ class APIsClient : virtual public APIsIf {
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> getOutputProtocol() {
     return poprot_;
   }
-  void put(const std::string& _username, const int32_t _newValue);
+  bool put(const std::string& _username, const int32_t _newValue);
   void send_put(const std::string& _username, const int32_t _newValue);
-  void recv_put();
-  void increase(const std::string& _username);
+  bool recv_put();
+  bool increase(const std::string& _username);
   void send_increase(const std::string& _username);
-  void recv_increase();
+  bool recv_increase();
   int32_t get(const std::string& _username);
   void send_get(const std::string& _username);
   int32_t recv_get();
@@ -594,22 +632,22 @@ class APIsMultiface : virtual public APIsIf {
     ifaces_.push_back(iface);
   }
  public:
-  void put(const std::string& _username, const int32_t _newValue) {
+  bool put(const std::string& _username, const int32_t _newValue) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
       ifaces_[i]->put(_username, _newValue);
     }
-    ifaces_[i]->put(_username, _newValue);
+    return ifaces_[i]->put(_username, _newValue);
   }
 
-  void increase(const std::string& _username) {
+  bool increase(const std::string& _username) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
       ifaces_[i]->increase(_username);
     }
-    ifaces_[i]->increase(_username);
+    return ifaces_[i]->increase(_username);
   }
 
   int32_t get(const std::string& _username) {

@@ -55,7 +55,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs thrift` -lPocoCrypto -lPocoCryptod -lPocoData -lPocoDataMySQL -lPocoDataMySQLd -lPocoDataODBC -lPocoDataODBCd -lPocoDataSQLite -lPocoDataSQLited -lPocoDatad -lPocoFoundation -lPocoFoundationd -lPocoJSON -lPocoJSONd -lPocoMongoDB -lPocoMongoDBd -lPocoNet -lPocoNetSSL -lPocoNetSSLd -lPocoNetd -lPocoUtil -lPocoUtild -lPocoXML -lPocoXMLd -lPocoZip -lPocoZipd  
+LDLIBSOPTIONS=`pkg-config --libs thrift` -lPocoCrypto -lPocoCryptod -lPocoData -lPocoDataMySQL -lPocoDataMySQLd -lPocoDataSQLite -lPocoDataSQLited -lPocoDatad -lPocoFoundation -lPocoFoundationd -lPocoJSON -lPocoJSONd -lPocoMongoDB -lPocoMongoDBd -lPocoNet -lPocoNetSSL -lPocoNetSSLd -lPocoNetd -lPocoUtil -lPocoUtild -lPocoXML -lPocoXMLd -lPocoZip -lPocoZipd  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}

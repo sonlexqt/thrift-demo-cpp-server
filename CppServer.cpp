@@ -72,38 +72,77 @@ std::string mySQLUsername = "";
 std::string mySQLPassword = "";
 Session* mySQLsession;
 
-struct ViewCountInfo
-{
+struct ViewCountInfo {
     std::string username;
-    int         counter;
+    int counter;
+};
+
+class Utilities {
+public:
+
+    static std::string convertToString(int number) {
+        ostringstream convert; // stream used for the conversion
+        convert << number; // insert the textual representation of 'Number' in the characters in the stream
+        std::string res = convert.str(); // set 'Result' to the contents of the stream
+        return res;
+    }
 };
 
 class APIsHandler : virtual public APIsIf {
+private:
+
+    int getRequest(const std::string& _username) {
+        int res = -1;
+        Statement select(*mySQLsession);
+        std::string match("'" + _username + "'");
+        select << "SELECT counter FROM view_count_info WHERE username = " + match + " LIMIT 1;", into(res);
+        select.execute();
+        return res;
+    }
+
+    void putRequest(const std::string& _username, const int32_t _newValue) {
+        Statement update(*mySQLsession);
+        std::string match("'" + _username + "'");
+        update << "UPDATE view_count_info SET counter=" + Utilities::convertToString(_newValue) + " WHERE username = " + match;
+        update.execute();
+    }
+
 public:
 
     APIsHandler() {
         // Your initialization goes here
     }
 
-    void put(const std::string& _username, const int32_t _newValue) {
+    bool put(const std::string& _username, const int32_t _newValue) {
         Logger::root().information("handle PUT request");
-        // check if existed or not ?
-        //TODO
+        // check if existed or not
+        int isExisted = getRequest(_username);
+        if (isExisted < 0) {
+            // the username is not existed yet
+            return false;
+        } else {
+            putRequest(_username, _newValue);
+        }
+        return true;
     }
 
-    void increase(const std::string& _username) {
+    bool increase(const std::string& _username) {
         Logger::root().information("handle INCREASE request");
-        //TODO
+        // check if existed or not
+        int isExisted = getRequest(_username);
+        if (isExisted < 0) {
+            // the username is not existed yet
+            return false;
+        } else {
+            putRequest(_username, isExisted + 1);
+        }
+        return true;
     }
 
     int32_t get(const std::string& _username) {
         Logger::root().information("handle GET request");
         cout << _username << endl;
-        int result = 0;
-        Statement select(*mySQLsession);
-        std::string match("'" + _username + "'");
-        select << "SELECT counter FROM view_count_info WHERE username = " + match + " LIMIT 1;", into(result);
-        select.execute();
+        int result = getRequest(_username);
         //Logger::root().information("GET: username = " + _username + " ,counter = " + result);
         cout << result << endl;
         return result;
@@ -113,104 +152,95 @@ public:
         Logger::root().information("handle PING request");
         return true;
     }
-
 };
 
 void getPropertiesInfo() {
     AutoPtr<PropertyFileConfiguration> pConf;
     pConf = new PropertyFileConfiguration("viewcount.properties");
     cout << "=== The following are information get from the viewcount.properties file: ===" << endl;
-    
+
     int serverPort = pConf->getInt("SERVER_PORT");
     cout << "serverPort: " << serverPort << endl;
     port = serverPort;
-            
+
     int applyCache = pConf->getInt("APPLY_CACHE");
     cout << "applyCache: " << applyCache << endl;
-    
+
     string authorName = pConf->getString("AUTHOR_NAME");
     cout << "authorName: " << authorName << endl;
-    
+
     mySQLHost = pConf->getString("MYSQL_HOST");
     cout << "mySQLHost: " << mySQLHost << endl;
-    
+
     mySQLPort = pConf->getInt("MYSQL_PORT");
     cout << "mySQLPort: " << mySQLPort << endl;
-    
+
     mySQLDb = pConf->getString("MYSQL_DB");
     cout << "mySQLDb: " << mySQLDb << endl;
-    
+
     mySQLUsername = pConf->getString("MYSQL_USERNAME");
     cout << "mySQLUsername: " << mySQLUsername << endl;
-    
+
     mySQLPassword = pConf->getString("MYSQL_PASSWORD");
     cout << "mySQLPassword: " << mySQLPassword << endl;
-    
+
     cout << "==========" << endl;
-    
+
 }
 
 void initLogger() {
     AutoPtr<FileChannel> pFileChannel(new FileChannel);
     pFileChannel->setProperty("path", "viewCount.log");
     AutoPtr<ConsoleChannel> pConsoleChannel(new ConsoleChannel);
-    
+
     AutoPtr<SplitterChannel> pSplitter(new SplitterChannel);
-    
+
     // add pattern formatter, more details go in to the messages
     AutoPtr<PatternFormatter> pPatternFormatter(new PatternFormatter);
     pPatternFormatter->setProperty("pattern", "%Y-%m-%d %H:%M:%S %s: %t");
     AutoPtr<FormattingChannel> pFCFileChannel(new FormattingChannel(pPatternFormatter, pFileChannel));
     AutoPtr<FormattingChannel> pFCConsoleChannel(new FormattingChannel(pPatternFormatter, pConsoleChannel));
-    
+
     pSplitter->addChannel(pFCConsoleChannel);
     pSplitter->addChannel(pFCFileChannel);
-    
+
     Logger::root().setChannel(pSplitter);
 }
 
-std::string convertToString(int number){
-    ostringstream convert;   // stream used for the conversion
-    convert << number;      // insert the textual representation of 'Number' in the characters in the stream
-    std::string res = convert.str(); // set 'Result' to the contents of the stream
-    return res;
-}
-
-void insertTestData(Session* session){
+void insertTestData(Session* session) {
     // insert some rows
-    ViewCountInfo vcInfo = 
-    {
+    ViewCountInfo vcInfo ={
         "A",
         1
     };
-    
+
     Statement insert(*session);
     insert << "INSERT INTO view_count_info VALUES(?, ?)",
-        use(vcInfo.username),
-        use(vcInfo.counter);
+            use(vcInfo.username),
+            use(vcInfo.counter);
     insert.execute();
 
     vcInfo.username = "B";
-    vcInfo.counter  = 5;
+    vcInfo.counter = 5;
     insert.execute();
-    
+
     vcInfo.username = "C";
-    vcInfo.counter  = 20;
+    vcInfo.counter = 20;
     insert.execute();
-    
+
     vcInfo.username = "D";
-    vcInfo.counter  = 50;
+    vcInfo.counter = 50;
     insert.execute();
 }
 
-void initDb(){
+void initDb() {
     // register MySQL connector
     Poco::Data::MySQL::Connector::registerConnector();
     // create a session
     std::string sessionStr = "host=";
-    sessionStr += mySQLHost;        
+    sessionStr += mySQLHost;
     sessionStr += ";port=";
-    sessionStr += convertToString(mySQLPort);
+    sessionStr += Utilities::convertToString(mySQLPort);
     sessionStr += ";db=";
     sessionStr += mySQLDb;
     sessionStr += ";user=";
@@ -223,9 +253,10 @@ void initDb(){
     *mySQLsession << "DROP TABLE IF EXISTS view_count_info", now;
     // (re)create table
     *mySQLsession << "CREATE TABLE view_count_info (username VARCHAR(30), counter INTEGER(5))", now;
-    
+
     insertTestData(mySQLsession);
 }
+
 int main(int argc, char **argv) {
     // print out viewcount.properties file information
     getPropertiesInfo();
@@ -233,7 +264,7 @@ int main(int argc, char **argv) {
     initLogger();
     // initialize the system database
     initDb();
-    
+
     // start the server
     shared_ptr<APIsHandler> handler(new APIsHandler());
     shared_ptr<TProcessor> processor(new APIsProcessor(handler));
@@ -248,6 +279,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-
-
-

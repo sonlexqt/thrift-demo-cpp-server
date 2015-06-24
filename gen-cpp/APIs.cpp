@@ -127,7 +127,20 @@ uint32_t APIs_put_result::read(::apache::thrift::protocol::TProtocol* iprot) {
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->success);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -142,6 +155,11 @@ uint32_t APIs_put_result::write(::apache::thrift::protocol::TProtocol* oprot) co
 
   xfer += oprot->writeStructBegin("APIs_put_result");
 
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_BOOL, 0);
+    xfer += oprot->writeBool(this->success);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -170,7 +188,20 @@ uint32_t APIs_put_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool((*(this->success)));
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -282,7 +313,20 @@ uint32_t APIs_increase_result::read(::apache::thrift::protocol::TProtocol* iprot
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->success);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -297,6 +341,11 @@ uint32_t APIs_increase_result::write(::apache::thrift::protocol::TProtocol* opro
 
   xfer += oprot->writeStructBegin("APIs_increase_result");
 
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_BOOL, 0);
+    xfer += oprot->writeBool(this->success);
+    xfer += oprot->writeFieldEnd();
+  }
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -325,7 +374,20 @@ uint32_t APIs_increase_presult::read(::apache::thrift::protocol::TProtocol* ipro
     if (ftype == ::apache::thrift::protocol::T_STOP) {
       break;
     }
-    xfer += iprot->skip(ftype);
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool((*(this->success)));
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
     xfer += iprot->readFieldEnd();
   }
 
@@ -685,10 +747,10 @@ uint32_t APIs_ping_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
   return xfer;
 }
 
-void APIsClient::put(const std::string& _username, const int32_t _newValue)
+bool APIsClient::put(const std::string& _username, const int32_t _newValue)
 {
   send_put(_username, _newValue);
-  recv_put();
+  return recv_put();
 }
 
 void APIsClient::send_put(const std::string& _username, const int32_t _newValue)
@@ -706,7 +768,7 @@ void APIsClient::send_put(const std::string& _username, const int32_t _newValue)
   oprot_->getTransport()->flush();
 }
 
-void APIsClient::recv_put()
+bool APIsClient::recv_put()
 {
 
   int32_t rseqid = 0;
@@ -731,18 +793,23 @@ void APIsClient::recv_put()
     iprot_->readMessageEnd();
     iprot_->getTransport()->readEnd();
   }
+  bool _return;
   APIs_put_presult result;
+  result.success = &_return;
   result.read(iprot_);
   iprot_->readMessageEnd();
   iprot_->getTransport()->readEnd();
 
-  return;
+  if (result.__isset.success) {
+    return _return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "put failed: unknown result");
 }
 
-void APIsClient::increase(const std::string& _username)
+bool APIsClient::increase(const std::string& _username)
 {
   send_increase(_username);
-  recv_increase();
+  return recv_increase();
 }
 
 void APIsClient::send_increase(const std::string& _username)
@@ -759,7 +826,7 @@ void APIsClient::send_increase(const std::string& _username)
   oprot_->getTransport()->flush();
 }
 
-void APIsClient::recv_increase()
+bool APIsClient::recv_increase()
 {
 
   int32_t rseqid = 0;
@@ -784,12 +851,17 @@ void APIsClient::recv_increase()
     iprot_->readMessageEnd();
     iprot_->getTransport()->readEnd();
   }
+  bool _return;
   APIs_increase_presult result;
+  result.success = &_return;
   result.read(iprot_);
   iprot_->readMessageEnd();
   iprot_->getTransport()->readEnd();
 
-  return;
+  if (result.__isset.success) {
+    return _return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "increase failed: unknown result");
 }
 
 int32_t APIsClient::get(const std::string& _username)
@@ -949,7 +1021,8 @@ void APIsProcessor::process_put(int32_t seqid, ::apache::thrift::protocol::TProt
 
   APIs_put_result result;
   try {
-    iface_->put(args._username, args._newValue);
+    result.success = iface_->put(args._username, args._newValue);
+    result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "APIs.put");
@@ -1002,7 +1075,8 @@ void APIsProcessor::process_increase(int32_t seqid, ::apache::thrift::protocol::
 
   APIs_increase_result result;
   try {
-    iface_->increase(args._username);
+    result.success = iface_->increase(args._username);
+    result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "APIs.increase");

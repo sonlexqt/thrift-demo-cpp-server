@@ -56,8 +56,6 @@
             <linkerLibLibItem>PocoData</linkerLibLibItem>
             <linkerLibLibItem>PocoDataMySQL</linkerLibLibItem>
             <linkerLibLibItem>PocoDataMySQLd</linkerLibLibItem>
-            <linkerLibLibItem>PocoDataODBC</linkerLibLibItem>
-            <linkerLibLibItem>PocoDataODBCd</linkerLibLibItem>
             <linkerLibLibItem>PocoDataSQLite</linkerLibLibItem>
             <linkerLibLibItem>PocoDataSQLited</linkerLibLibItem>
             <linkerLibLibItem>PocoDatad</linkerLibLibItem>
