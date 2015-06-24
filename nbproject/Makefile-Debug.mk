@@ -45,8 +45,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=
-CXXFLAGS=
+CCFLAGS=-std=c++11
+CXXFLAGS=-std=c++11
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -55,7 +55,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs thrift` -lPocoCrypto -lPocoCryptod -lPocoData -lPocoDataMySQL -lPocoDataMySQLd -lPocoDataSQLite -lPocoDataSQLited -lPocoDatad -lPocoFoundation -lPocoFoundationd -lPocoJSON -lPocoJSONd -lPocoMongoDB -lPocoMongoDBd -lPocoNet -lPocoNetSSL -lPocoNetSSLd -lPocoNetd -lPocoUtil -lPocoUtild -lPocoXML -lPocoXMLd -lPocoZip -lPocoZipd  
+LDLIBSOPTIONS=`pkg-config --libs thrift` -lPocoCrypto -lPocoCryptod -lPocoData -lPocoDataMySQL -lPocoDataMySQLd -lPocoDataSQLite -lPocoDataSQLited -lPocoDatad -lPocoFoundation -lPocoFoundationd -lPocoJSON -lPocoJSONd -lPocoMongoDB -lPocoMongoDBd -lPocoNet -lPocoNetSSL -lPocoNetSSLd -lPocoNetd -lPocoUtil -lPocoUtild -lPocoXML -lPocoXMLd -lPocoZip -lPocoZipd `pkg-config --libs libmemcached`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -68,22 +68,22 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/thriftdemo-cppserver: ${OBJECTFILES}
 ${OBJECTDIR}/CppServer.o: CppServer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Igen-cpp `pkg-config --cflags thrift`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/CppServer.o CppServer.cpp
+	$(COMPILE.cc) -g -Igen-cpp `pkg-config --cflags thrift` `pkg-config --cflags libmemcached`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/CppServer.o CppServer.cpp
 
 ${OBJECTDIR}/gen-cpp/APIs.o: gen-cpp/APIs.cpp 
 	${MKDIR} -p ${OBJECTDIR}/gen-cpp
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Igen-cpp `pkg-config --cflags thrift`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gen-cpp/APIs.o gen-cpp/APIs.cpp
+	$(COMPILE.cc) -g -Igen-cpp `pkg-config --cflags thrift` `pkg-config --cflags libmemcached`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gen-cpp/APIs.o gen-cpp/APIs.cpp
 
 ${OBJECTDIR}/gen-cpp/thriftDemo_constants.o: gen-cpp/thriftDemo_constants.cpp 
 	${MKDIR} -p ${OBJECTDIR}/gen-cpp
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Igen-cpp `pkg-config --cflags thrift`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gen-cpp/thriftDemo_constants.o gen-cpp/thriftDemo_constants.cpp
+	$(COMPILE.cc) -g -Igen-cpp `pkg-config --cflags thrift` `pkg-config --cflags libmemcached`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gen-cpp/thriftDemo_constants.o gen-cpp/thriftDemo_constants.cpp
 
 ${OBJECTDIR}/gen-cpp/thriftDemo_types.o: gen-cpp/thriftDemo_types.cpp 
 	${MKDIR} -p ${OBJECTDIR}/gen-cpp
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Igen-cpp `pkg-config --cflags thrift`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gen-cpp/thriftDemo_types.o gen-cpp/thriftDemo_types.cpp
+	$(COMPILE.cc) -g -Igen-cpp `pkg-config --cflags thrift` `pkg-config --cflags libmemcached`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/gen-cpp/thriftDemo_types.o gen-cpp/thriftDemo_types.cpp
 
 # Subprojects
 .build-subprojects:

@@ -69,3 +69,11 @@
 2015-06-24 03:28:17 : handle INCREASE request
 2015-06-24 03:28:26 : handle PUT request
 2015-06-24 03:28:35 : handle INCREASE request
+2015-06-24 08:46:27 : > Server is running
+2015-06-24 08:46:39 : handle GET request
+2015-06-24 08:46:43 : handle GET request
+2015-06-24 08:46:50 : handle PUT request
+2015-06-24 08:47:01 : handle INCREASE request
+2015-06-24 10:34:38 : > Server is running
+2015-06-24 10:34:45 : handle GET request
+2015-06-24 10:34:49 : handle GET request

@@ -47,6 +47,7 @@
           <incDir>
             <pElem>gen-cpp</pElem>
           </incDir>
+          <commandLine>-std=c++11</commandLine>
         </ccTool>
         <linkerTool>
           <linkerLibItems>
@@ -75,6 +76,7 @@
             <linkerLibLibItem>PocoXMLd</linkerLibLibItem>
             <linkerLibLibItem>PocoZip</linkerLibLibItem>
             <linkerLibLibItem>PocoZipd</linkerLibLibItem>
+            <linkerOptionItem>`pkg-config --libs libmemcached`</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>

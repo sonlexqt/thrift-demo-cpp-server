@@ -6,8 +6,11 @@
 // include Thrift library
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
+#include <thrift/server/TThreadPoolServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/concurrency/ThreadManager.h>
+#include <thrift/concurrency/PosixThreadFactory.h>
 // include POCO library files
 #include "Poco/Foundation.h"
 #include "Poco/Util/PropertyFileConfiguration.h"
@@ -23,6 +26,7 @@
 #include <Poco/Data/MySQL/Connector.h>
 #include <Poco/Data/SessionFactory.h>
 // include other libraries
+#include <libmemcached/memcached.h>
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
@@ -42,6 +46,7 @@ using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
+using namespace apache::thrift::concurrency;
 // using namespaces from POCO
 using Poco::AutoPtr;
 using Poco::Util::PropertyFileConfiguration;
@@ -65,6 +70,7 @@ using boost::shared_ptr;
  * GLOBAL VARS
  */
 int port = 0;
+int isApplyCache = 0;
 std::string mySQLHost = "";
 int mySQLPort = 0;
 std::string mySQLDb = "";
@@ -165,6 +171,7 @@ void getPropertiesInfo() {
 
     int applyCache = pConf->getInt("APPLY_CACHE");
     cout << "applyCache: " << applyCache << endl;
+    isApplyCache = applyCache;
 
     string authorName = pConf->getString("AUTHOR_NAME");
     cout << "authorName: " << authorName << endl;
@@ -257,6 +264,13 @@ void initDb() {
     insertTestData(mySQLsession);
 }
 
+void initCaching(){
+    if (isApplyCache){
+        cout << "yes I'm using cache" << endl;
+    }
+    else cout << "no I'm not using cache" << endl;
+}
+
 int main(int argc, char **argv) {
     // print out viewcount.properties file information
     getPropertiesInfo();
@@ -264,14 +278,32 @@ int main(int argc, char **argv) {
     initLogger();
     // initialize the system database
     initDb();
+    // initialize the caching database
+    initCaching();
 
     // start the server
+    //TODO error here !
     shared_ptr<APIsHandler> handler(new APIsHandler());
     shared_ptr<TProcessor> processor(new APIsProcessor(handler));
     shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
     shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
     shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
-    TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+    
+    //TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+    
+    //TODO TThreadPoolServer
+    const int workerCount = 4;
+    boost::shared_ptr<ThreadManager> threadManager =
+            ThreadManager::newSimpleThreadManager(workerCount);
+    boost::shared_ptr<PosixThreadFactory> threadFactory =
+            boost::shared_ptr<PosixThreadFactory>(new PosixThreadFactory());
+    threadManager->threadFactory(threadFactory);
+    threadManager->start();
+    TThreadPoolServer server(processor,
+            serverTransport,
+            transportFactory,
+            protocolFactory,
+            threadManager);
 
     Logger::root().information("> Server is running");
 
