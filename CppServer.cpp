@@ -266,9 +266,47 @@ void initDb() {
 
 void initCaching(){
     if (isApplyCache){
-        cout << "yes I'm using cache" << endl;
+        cout << "Using cache" << endl;
     }
-    else cout << "no I'm not using cache" << endl;
+    else cout << "Not using cache" << endl;
+    
+    //connect server
+//    memcached_st *memc;
+//    memcached_return rc;
+//    memcached_server_st *server;
+//    time_t expiration;
+//    uint32_t flags;
+//
+//    memc = memcached_create(NULL);
+//    server = memcached_server_list_append(NULL, "localhost", 11211, &rc);
+//    rc = memcached_server_push(memc, server);
+//    memcached_server_list_free(server);
+//
+//    string key = "username";
+//    string value = "hehe";
+//    size_t value_length = value.length();
+//    size_t key_length = key.length();
+//
+//    //Save data
+//    rc = memcached_set(memc, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
+//    if (rc == MEMCACHED_SUCCESS) {
+//        cout << "Save data:" << value << " sucessful!" << endl;
+//    }
+//
+//    //Get data
+//    char* result = memcached_get(memc, key.c_str(), key_length, &value_length, &flags, &rc);
+//    if (rc == MEMCACHED_SUCCESS) {
+//        cout << "Get value:" << result << " sucessful!" << endl;
+//    }
+//
+//    //Delete data
+//    rc = memcached_delete(memc, key.c_str(), key_length, expiration);
+//    if (rc == MEMCACHED_SUCCESS) {
+//        cout << "Delete key:" << key << " sucessful!" << endl;
+//    }
+//
+//    //free
+//    memcached_free(memc);
 }
 
 int main(int argc, char **argv) {
@@ -282,7 +320,6 @@ int main(int argc, char **argv) {
     initCaching();
 
     // start the server
-    //TODO error here !
     boost::shared_ptr<APIsHandler> handler(new APIsHandler());
     boost::shared_ptr<TProcessor> processor(new APIsProcessor(handler));
     boost::shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
@@ -291,7 +328,7 @@ int main(int argc, char **argv) {
     
     //TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
     
-    //TODO TThreadPoolServer
+    // TThreadPoolServer
     const int workerCount = 4;
     boost::shared_ptr<ThreadManager> threadManager =
             ThreadManager::newSimpleThreadManager(workerCount);

@@ -82,3 +82,50 @@
 2015-06-25 07:53:37 : handle GET request
 2015-06-25 07:53:43 : handle INCREASE request
 2015-06-25 07:55:25 : > Server is running
+2015-06-25 08:59:56 : > Server is running
+2015-06-25 09:03:28 : > Server is running
+2015-06-25 09:20:42 : > Server is running
+2015-06-25 09:24:02 : > Server is running
+2015-06-25 09:24:16 : handle GET request
+2015-06-25 09:24:18 : handle GET request
+2015-06-25 09:24:25 : handle GET request
+2015-06-25 09:24:27 : handle GET request
+2015-06-25 09:26:28 : handle PUT request
+2015-06-25 09:37:36 : > Server is running
+2015-06-25 09:37:49 : handle GET request
+2015-06-25 09:37:49 : handle GET request
+2015-06-25 09:37:49 : handle PUT request
+2015-06-25 09:37:49 : handle GET request
+2015-06-25 09:37:49 : handle PUT request
+2015-06-25 09:37:49 : handle INCREASE request
+2015-06-25 09:37:49 : handle GET request
+2015-06-25 09:37:49 : handle INCREASE request
+2015-06-25 09:37:49 : handle PING request
+2015-06-25 09:38:45 : handle GET request
+2015-06-25 09:38:45 : handle GET request
+2015-06-25 09:38:45 : handle PUT request
+2015-06-25 09:38:45 : handle GET request
+2015-06-25 09:38:45 : handle PUT request
+2015-06-25 09:38:45 : handle INCREASE request
+2015-06-25 09:38:45 : handle GET request
+2015-06-25 09:38:45 : handle INCREASE request
+2015-06-25 09:38:45 : handle PING request
+2015-06-25 09:39:05 : handle GET request
+2015-06-25 09:40:13 : handle GET request
+2015-06-25 09:40:13 : handle GET request
+2015-06-25 09:40:13 : handle PUT request
+2015-06-25 09:40:13 : handle GET request
+2015-06-25 09:40:13 : handle PUT request
+2015-06-25 09:40:13 : handle INCREASE request
+2015-06-25 09:40:13 : handle GET request
+2015-06-25 09:40:13 : handle INCREASE request
+2015-06-25 09:40:13 : handle PING request
+2015-06-25 09:40:34 : handle GET request
+2015-06-25 09:40:34 : handle GET request
+2015-06-25 09:40:34 : handle PUT request
+2015-06-25 09:40:34 : handle GET request
+2015-06-25 09:40:34 : handle PUT request
+2015-06-25 09:40:34 : handle INCREASE request
+2015-06-25 09:40:34 : handle GET request
+2015-06-25 09:40:34 : handle INCREASE request
+2015-06-25 09:40:34 : handle PING request
