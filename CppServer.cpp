@@ -283,11 +283,11 @@ int main(int argc, char **argv) {
 
     // start the server
     //TODO error here !
-    shared_ptr<APIsHandler> handler(new APIsHandler());
-    shared_ptr<TProcessor> processor(new APIsProcessor(handler));
-    shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
-    shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
-    shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+    boost::shared_ptr<APIsHandler> handler(new APIsHandler());
+    boost::shared_ptr<TProcessor> processor(new APIsProcessor(handler));
+    boost::shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
+    boost::shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
+    boost::shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
     
     //TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
     
