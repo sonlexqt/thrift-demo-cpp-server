@@ -99,7 +99,10 @@ private:
 
     int getRequest(const std::string& _username) {
         int res = -1;
-        Statement select(*mySQLsession);
+        Session localSession = getSession();
+        Statement select(localSession);
+        // commented out because of thread conflicts
+//        Statement select(*mySQLsession);
         std::string match("'" + _username + "'");
         select << "SELECT counter FROM view_count_info WHERE username = " + match + " LIMIT 1;", into(res);
         select.execute();
@@ -107,10 +110,29 @@ private:
     }
 
     void putRequest(const std::string& _username, const int32_t _newValue) {
-        Statement update(*mySQLsession);
+        Session localSession = getSession();
+//        Statement update(*mySQLsession);
+        Statement update(localSession);
         std::string match("'" + _username + "'");
         update << "UPDATE view_count_info SET counter=" + Utilities::convertToString(_newValue) + " WHERE username = " + match;
         update.execute();
+    }
+
+    Session getSession() {
+        Poco::Data::MySQL::Connector::registerConnector();
+        std::string sessionStr = "host=";
+        sessionStr += mySQLHost;
+        sessionStr += ";port=";
+        sessionStr += Utilities::convertToString(mySQLPort);
+        sessionStr += ";db=";
+        sessionStr += mySQLDb;
+        sessionStr += ";user=";
+        sessionStr += mySQLUsername;
+        sessionStr += ";password=";
+        sessionStr += mySQLPassword;
+        sessionStr += ";compress=true;auto-reconnect=true";
+        Session session("MySQL", sessionStr);
+        return session;
     }
 
 public:
@@ -178,7 +200,6 @@ void getPropertiesInfo() {
 
     mySQLHost = pConf->getString("MYSQL_HOST");
     cout << "mySQLHost: " << mySQLHost << endl;
-
     mySQLPort = pConf->getInt("MYSQL_PORT");
     cout << "mySQLPort: " << mySQLPort << endl;
 
