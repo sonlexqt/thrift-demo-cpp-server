@@ -26,7 +26,7 @@
 #include <Poco/Data/MySQL/Connector.h>
 #include <Poco/Data/SessionFactory.h>
 // include other libraries
-#include <libmemcached/memcached.h>
+//#include <libmemcached/memcached.h>
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
@@ -71,7 +71,7 @@ using boost::shared_ptr;
  */
 int port = 0;
 int isApplyCache = 0;
-std::string mySQLHost = "";
+std::string mySQLHost = "127.0.0.1";
 int mySQLPort = 0;
 std::string mySQLDb = "";
 std::string mySQLUsername = "";
